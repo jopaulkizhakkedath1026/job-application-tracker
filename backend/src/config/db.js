@@ -1,13 +1,16 @@
 import mongoose from 'mongoose';
 
 const connectDB = async () => {
+  const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/job_tracker';
+  
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI);
-    console.log(`[MongoDB Connected]: ${conn.connection.host}`);
+    const conn = await mongoose.connect(uri, {
+      serverSelectionTimeoutMS: 5000
+    });
+    console.log(`[MongoDB Connected]: Host -> ${conn.connection.host}`);
   } catch (error) {
-    console.error(`[MongoDB Connection Error]: ${error.message}`);
-    // Fallback or retry logic if needed
-    process.exit(1);
+    console.error(`[MongoDB Connection Notice]: ${error.message}`);
+    console.log('[MongoDB]: Awaiting active database connection. Ensure MONGODB_URI in backend/.env points to your Atlas cluster or local MongoDB instance.');
   }
 };
 
